@@ -45,26 +45,26 @@ app.route('/api/v1/todos').get( async (req, res) => {
         // Nothing in cache, try the Todo storage
         await storageServiceApi.get(req.path)
             .then(resp2 => {
-            todos = resp2.data;
-            if (todos == null || todos.length <=0) {
-                console.log('Got nothing from Todo Storage');
-            } else {
-                console.log('Got Todos from Todo Storage (' + todos.length + ')');
+                todos = resp2.data;
+                if (todos == null || todos.length <=0) {
+                    console.log('Got nothing from Todo Storage');
+                } else {
+                    console.log('Got Todos from Todo Storage (' + todos.length + ')');
 
-                // Send message to Todo Cache about existing todos
-                if (cacheServiceDown == false) {
-                    sendMessageOnQueue('cache-ingestion', "**load**");
+                    // Send message to Todo Cache about existing todos
+                    if (cacheServiceDown === false) {
+                        sendMessageOnQueue('cache-ingestion', "**load**");
+                    }
                 }
-            }
-            res.send(todos);
-        })
-        .catch(err2 => {
-            console.log('No response from Storage Service');
-            res.send(todos);
-        });
+                res.send(todos);
+            })
+            .catch(err2 => {
+                console.log('No response from Storage Service');
+                res.send(todos);
+            });
     } else {
         console.log('Got Todos from Todo Cache (' + todos.length + ')');
-        res.send(todos);
+        es.send(todos);
     }
 });
 
